@@ -9,6 +9,7 @@ const PORT = 5127;
 app.use(cors());
 app.use(bodyParser.json());
 
+
 // Sample data array
 let dataArray = [
   ["Apples", "5"],
