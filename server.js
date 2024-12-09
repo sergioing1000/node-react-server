@@ -10,7 +10,20 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Sample data array
-let dataArray = ["Item 1", "Item 2", "Item 3"];
+let dataArray = [
+  ["Apples", "5"],
+  ["Lettuce", "3"],
+  ["BBQ Sauce", "2"],
+  ["Hair Spray", "555"],
+];
+
+
+  // const [rows, setRows] = useState([
+  //   ["Apples", "5"],
+  //   ["Lettuce", "3"],
+  //   ["BBQ Sauce", "2"],
+  //   ["Hair Spray", "1"],
+  // ]);
 
 const automotiveUSMarket = [
   // Key-Value pairs
@@ -50,7 +63,7 @@ const automotiveUSMarket = [
 // Routes
 // Get all items
 app.get("/api/items", (req, res) => {
-  res.json(automotiveUSMarket);
+  res.json(dataArray);
 });
 
 // Add a new item
