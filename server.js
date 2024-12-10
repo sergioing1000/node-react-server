@@ -18,14 +18,6 @@ let dataArray = [
   ["Hair Spray", "555"],
 ];
 
-
-  // const [rows, setRows] = useState([
-  //   ["Apples", "5"],
-  //   ["Lettuce", "3"],
-  //   ["BBQ Sauce", "2"],
-  //   ["Hair Spray", "1"],
-  // ]);
-
 const automotiveUSMarket = [
   // Key-Value pairs
   { TotalVehiclesSold: 14350000 },
