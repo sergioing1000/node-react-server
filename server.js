@@ -1,3 +1,6 @@
+require("dotenv").config();
+const { MongoClient } = require("mongodb");
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -10,6 +13,33 @@ app.use(cors());
 app.use(bodyParser.json());
 
 
+async function run() {
+  const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
+
+  const client = new MongoClient(uri);
+
+  await client.connect();
+
+  const dbName = "DataBase";
+  const collectionName = "Collection";
+
+  const database = client.db(dbName);
+  const collection = database.collection(collectionName);
+
+  try {
+    const documents = await collection.find({}).toArray();
+
+    console.log("Documents:", documents);
+  } catch (err) {
+    console.error("Error reading documents:", err);
+  }
+
+  await client.close();
+}
+
+
+run().catch(console.dir);
+
 // Sample data array
 let dataArray = [
   ["Apples", "5"],
@@ -18,13 +48,12 @@ let dataArray = [
   ["Hair Spray", "555"],
 ];
 
-
-  // const [rows, setRows] = useState([
-  //   ["Apples", "5"],
-  //   ["Lettuce", "3"],
-  //   ["BBQ Sauce", "2"],
-  //   ["Hair Spray", "1"],
-  // ]);
+// const [rows, setRows] = useState([
+//   ["Apples", "5"],
+//   ["Lettuce", "3"],
+//   ["BBQ Sauce", "2"],
+//   ["Hair Spray", "1"],
+// ]);
 
 const automotiveUSMarket = [
   // Key-Value pairs
@@ -60,7 +89,6 @@ const automotiveUSMarket = [
   { LuxuryBrandLeader: "BMW" },
 ];
 
-
 // Routes
 // Get all items
 app.get("/api/items", (req, res) => {
@@ -72,13 +100,11 @@ app.post("/api/items", (req, res) => {
   const newItem = req.body.item;
   if (newItem) {
     dataArray.push(newItem);
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Item added successfully",
-        data: dataArray,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Item added successfully",
+      data: dataArray,
+    });
   } else {
     res.status(400).json({ success: false, message: "Item is required" });
   }
@@ -89,13 +115,11 @@ app.delete("/api/items/:index", (req, res) => {
   const index = parseInt(req.params.index, 10);
   if (index >= 0 && index < dataArray.length) {
     dataArray.splice(index, 1);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "Item deleted successfully",
-        data: dataArray,
-      });
+    res.status(200).json({
+      success: true,
+      message: "Item deleted successfully",
+      data: dataArray,
+    });
   } else {
     res.status(400).json({ success: false, message: "Invalid index" });
   }
