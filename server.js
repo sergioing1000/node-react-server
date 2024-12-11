@@ -29,7 +29,23 @@ async function run() {
   try {
     const documents = await collection.find({}).toArray();
 
-    console.log("Documents:", documents);
+    const Documents2 = Array.from(documents);
+    
+    const convertToDataArray = (documents) => {
+      return documents.map((doc) => [
+        doc['"Description"'],
+        doc['"Qty"'].toString(),
+      ]);
+    };
+
+    let dataArr = convertToDataArray(Documents2);
+    // let dataArr = (Documents2);
+    console.log("dataArr:");
+    console.log(typeof dataArr)
+    console.dir(dataArr);
+
+    return Array.from(dataArr);
+
   } catch (err) {
     console.error("Error reading documents:", err);
   }
@@ -37,55 +53,27 @@ async function run() {
   await client.close();
 }
 
+let dataArray = run().catch();
 
-run().catch(console.dir);
 
 // Sample data array
-let dataArray = [
+let dataArray2 = [
   ["Apples", "5"],
   ["Lettuce", "3"],
   ["BBQ Sauce", "2"],
-  ["Hair Spray", "555"],
+  ["Hair Spray", "5"],
 ];
 
-const automotiveUSMarket = [
-  // Key-Value pairs
-  { TotalVehiclesSold: 14350000 },
-  { TopSellingBrand: "Toyota" },
-  { EVMarketShare: "7.1%" },
-  { AverageVehiclePrice: "$48,500" },
-  { TopSUVModel: "Honda CR-V" },
+console.log("dataArray2:");
+console.log(typeof dataArray2);
+console.log(dataArray2);
 
-  // JSON Objects
-  {
-    ElectricVehicles: {
-      Tesla: { Model3: 250000, ModelY: 310000 },
-      Ford: { MustangMachE: 36000 },
-    },
-  },
-  {
-    PopularSegments: {
-      Sedans: ["Toyota Camry", "Honda Accord", "Nissan Altima"],
-      Trucks: ["Ford F-150", "Chevrolet Silverado", "RAM 1500"],
-    },
-  },
-  {
-    YearlyGrowth: {
-      2022: "3.4%",
-      2023: "2.8%",
-      "2024_est": "4.1%",
-    },
-  },
-
-  // Additional Key-Value pairs
-  { HybridSalesGrowth: "18%" },
-  { LuxuryBrandLeader: "BMW" },
-];
 
 // Routes
 // Get all items
 app.get("/api/items", (req, res) => {
-  res.json(dataArray);
+  console.log("first")
+  res.json(dataArray2);
 });
 
 // Add a new item
