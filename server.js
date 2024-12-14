@@ -12,7 +12,6 @@ const PORT = 5127;
 app.use(cors());
 app.use(bodyParser.json());
 
-
 async function run() {
   const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
 
@@ -29,23 +28,16 @@ async function run() {
   try {
     const documents = await collection.find({}).toArray();
 
-    const Documents2 = Array.from(documents);
-    
     const convertToDataArray = (documents) => {
       return documents.map((doc) => [
-        doc['"Description"'],
-        doc['"Qty"'].toString(),
+        doc["Description"],
+        doc["Qty"].toString(),
       ]);
     };
 
-    let dataArr = convertToDataArray(Documents2);
-    // let dataArr = (Documents2);
-    console.log("dataArr:");
-    console.log(typeof dataArr)
-    console.dir(dataArr);
+    let dataArr = convertToDataArray(documents);
 
     return Array.from(dataArr);
-
   } catch (err) {
     console.error("Error reading documents:", err);
   }
@@ -53,8 +45,11 @@ async function run() {
   await client.close();
 }
 
-let dataArray = run().catch();
+const dataArray = run().catch();
 
+// let dataArray = run().catch();
+// console.log("##### dataArray: #####");
+// console.log(dataArray);
 
 // Sample data array
 let dataArray2 = [
@@ -64,16 +59,15 @@ let dataArray2 = [
   ["Hair Spray", "5"],
 ];
 
-console.log("dataArray2:");
-console.log(typeof dataArray2);
-console.log(dataArray2);
+
 
 
 // Routes
 // Get all items
 app.get("/api/items", (req, res) => {
   console.log("first")
-  res.json(dataArray2);
+  console.log(dataArray);
+  res.status(202).json(dataArray);
 });
 
 // Add a new item
