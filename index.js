@@ -120,6 +120,7 @@ app.get("/api/items", (req, res) => {
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
   }
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.status(200).json(dataArray);
 });
 
