@@ -21,3 +21,4 @@ lerna-debug.log*
 
 # Yarn Integrity file
 .yarn-integrity
+.vercel
