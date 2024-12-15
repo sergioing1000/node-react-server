@@ -6,69 +6,138 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
-const PORT = 5127;
+const PORT = process.env.PORT || 5127;
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-async function run() {
-  const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
+let dataArray = []; // Initialize as an empty array
 
+async function initializeDataArray() {
+  try {
+    dataArray = await run();
+  } catch (error) {
+    console.error("Error initializing data array:", error);
+  }
+}
+
+async function startServer() {
+  await initializeDataArray();
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+  });
+}
+
+startServer();
+
+// Call this function to populate dataArray when the server starts
+initializeDataArray();
+
+async function run() {
+
+  const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
   const client = new MongoClient(uri);
 
-  await client.connect();
+  try {
+    await client.connect();
+
+    const dbName = "DataBase";
+    const collectionName = "Collection";
+
+    const database = client.db(dbName);
+    const collection = database.collection(collectionName);
+
+    const documents = await collection.find({}).toArray();
+
+    
+    return documents.map((doc) => [
+       doc["Description"],
+       doc["Qty"].toString(),
+    ]);
+    
+    
+  } catch (err) {
+    console.error("Error reading documents:", err);
+    return []; // Return an empty array on error
+  }
+  finally {
+    await client.close();
+  }
+}
+
+
+async function saveDocuments(data) {
+
+  const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
+  const client = new MongoClient(uri);
 
   const dbName = "DataBase";
   const collectionName = "Collection";
 
-  const database = client.db(dbName);
-  const collection = database.collection(collectionName);
-
   try {
-    const documents = await collection.find({}).toArray();
+    // Connect to MongoDB
+    await client.connect();
 
-    const convertToDataArray = (documents) => {
-      return documents.map((doc) => [
-        doc["Description"],
-        doc["Qty"].toString(),
-      ]);
-    };
+    // Access the database and collection
+    const db = client.db(dbName);
+    const collection = db.collection(collectionName);
 
-    let dataArr = convertToDataArray(documents);
+    // Delete all documents in the collection
+    await collection.deleteMany({});
+    console.log("All documents deleted.");
 
-    return Array.from(dataArr);
-  } catch (err) {
-    console.error("Error reading documents:", err);
+    const datatobePushed = [];
+
+    for (let i = 0; i < data.rows.length; i++) {
+      datatobePushed.push({
+        Description: data.rows[i][0],
+        Qty: data.rows[i][1],
+      });
+    }
+
+    // Insert the new documents
+    const result = await collection.insertMany(datatobePushed);
+
+    console.log(`${result.insertedCount} documents inserted.`);
+  } catch (error) {
+    console.error("Error replacing documents:", error);
+  } finally {
+    // Close the connection
+    await client.close();
   }
-
-  await client.close();
 }
 
-const dataArray = run().catch();
-
-// let dataArray = run().catch();
-// console.log("##### dataArray: #####");
-// console.log(dataArray);
-
-// Sample data array
-let dataArray2 = [
-  ["Apples", "5"],
-  ["Lettuce", "3"],
-  ["BBQ Sauce", "2"],
-  ["Hair Spray", "5"],
-];
-
-
-
-
-// Routes
+////////// ROUTES //////////
 // Get all items
-app.get("/api/items", (req, res) => {
-  console.log("first")
-  console.log(dataArray);
-  res.status(202).json(dataArray);
+app.get("/", (req, res) => {
+  
+  const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
+  res.send(htmlresponse);
 });
+
+app.get("/api/items", (req, res) => {
+  if (!dataArray || dataArray.length === 0) {
+    return res.status(404).json({ success: false, message: "No items found" });
+  }
+  res.status(200).json(dataArray);
+});
+
+
+// Save all items
+app.post('/api/save', (req, res) => {
+  // Access data sent from the frontend
+  const data = req.body;
+
+  saveDocuments(data);
+  
+  // Respond to the client
+  res.status(201).json({
+    message: "Data received successfully",
+    receivedData: data,
+  });
+});
+
 
 // Add a new item
 app.post("/api/items", (req, res) => {
@@ -98,9 +167,4 @@ app.delete("/api/items/:index", (req, res) => {
   } else {
     res.status(400).json({ success: false, message: "Invalid index" });
   }
-});
-
-// Start the server
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
 });
