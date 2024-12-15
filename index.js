@@ -8,8 +8,14 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 5127;
 
+const corsOptions = {
+  origin: "https://zingy-frangollo-f59cf4.netlify.app", // Replace with the allowed origin
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 let dataArray = []; // Initialize as an empty array
