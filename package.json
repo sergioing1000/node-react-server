@@ -2,7 +2,7 @@
   "name": "react-server",
   "version": "1.0.0",
   "description": "Wish List Node.js Web Server",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
