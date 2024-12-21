@@ -3,20 +3,20 @@ const { MongoClient } = require("mongodb");
 
 const express = require("express");
 const bodyParser = require("body-parser");
-const cors = require("cors");
+// const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5127;
 
-const corsOptions = {
-  origin: "https://zingy-frangollo-f59cf4.netlify.app",
-  // origin: "http://localhost:5173/",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true,
-};
+// const corsOptions = {
+//   origin: "https://zingy-frangollo-f59cf4.netlify.app",
+//   // origin: "http://localhost:5173/",
+//   methods: ["GET", "POST", "PUT", "DELETE"],
+//   credentials: true,
+// };
 
 // Middleware
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 app.use("/api/items", (req, res, next) => {
@@ -200,3 +200,4 @@ app.delete("/api/items/:index", (req, res) => {
     res.status(400).json({ success: false, message: "Invalid index" });
   }
 });
+// 
