@@ -9,9 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 5127;
 
 const corsOptions = {
-  origin: "*", // Allow only your frontend domain
+  origin: "https://zingy-frangollo-f59cf4.netlify.app", // Allow only your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-  credentials: true, // Allow cookies if needed
   allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
 };
 
@@ -147,7 +146,10 @@ async function saveDocuments(data) {
 // Get all items
 app.get("/", (req, res) => {
   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://zingy-frangollo-f59cf4.netlify.app"
+  );
   res.send(htmlresponse);
 });
 
