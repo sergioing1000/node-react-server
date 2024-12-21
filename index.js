@@ -3,20 +3,19 @@ const { MongoClient } = require("mongodb");
 
 const express = require("express");
 const bodyParser = require("body-parser");
-// const cors = require("cors");
+const cors = require("cors");
 
 const app = express();
 const PORT = process.env.PORT || 5127;
 
-// const corsOptions = {
-//   origin: "https://zingy-frangollo-f59cf4.netlify.app",
-//   // origin: "http://localhost:5173/",
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   credentials: true,
-// };
+const corsOptions = {
+  origin: "https://zingy-frangollo-f59cf4.netlify.app", // Allow only your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
+  credentials: true, // Allow cookies if needed
+};
 
 // Middleware
-// app.use(cors(corsOptions));
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // app.use("/api/items", (req, res, next) => {
@@ -144,7 +143,7 @@ app.get("/", (req, res) => {
   res.send(htmlresponse);
 });
 
-app.get("/api/items", (req, res) => {
+app.get("/api/items", cors(corsOptions), (req, res) => {
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
   }
