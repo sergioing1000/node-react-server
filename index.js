@@ -12,11 +12,21 @@ const corsOptions = {
   origin: "https://zingy-frangollo-f59cf4.netlify.app", // Allow only your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   credentials: true, // Allow cookies if needed
+  allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+
+app.options("*", cors(corsOptions)); // Handle preflight requests
+
+app.use((req, res, next) => {
+  console.log(`Request from origin: ${req.headers.origin}`);
+  next();
+});
+
+
 
 // app.use("/api/items", (req, res, next) => {
 //   res.setHeader(
@@ -34,7 +44,6 @@ app.use(bodyParser.json());
 
 //   next(); // Proceed to the next middleware or route handler
 // });
-
 
 let dataArray = []; // Initialize as an empty array
 
@@ -147,6 +156,10 @@ app.get("/api/items", cors(corsOptions), (req, res) => {
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
   }
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://zingy-frangollo-f59cf4.netlify.app"
+  );
   res.status(200).json(dataArray);
 });
 
