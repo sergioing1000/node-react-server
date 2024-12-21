@@ -9,7 +9,8 @@ const app = express();
 const PORT = process.env.PORT || 5127;
 
 const corsOptions = {
-  origin: "https://zingy-frangollo-f59cf4.netlify.app", // Replace with the allowed origin
+  origin: "https://zingy-frangollo-f59cf4.netlify.app",
+  // origin: "http://localhost:5173/",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -38,7 +39,7 @@ async function startServer() {
 startServer();
 
 // Call this function to populate dataArray when the server starts
-initializeDataArray();
+// initializeDataArray();
 
 async function run() {
 
@@ -47,6 +48,9 @@ async function run() {
 
 
   try {
+
+    console.log("here");
+
     await client.connect();
 
     const dbName = "DataBase";
@@ -57,7 +61,6 @@ async function run() {
 
     const documents = await collection.find({}).toArray();
 
-    
     return documents.map((doc) => [
        doc["Description"],
        doc["Qty"].toString(),
