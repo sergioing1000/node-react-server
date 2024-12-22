@@ -10,7 +10,8 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  origin: "http://localhost:5173", // Allow only your frontend domain
+  origin:
+    "https://wish-list-apeh-35rfc4105-sergioing1000s-projects.vercel.app", // Allow only your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
 };
@@ -130,7 +131,10 @@ async function saveDocuments(data) {
 
 app.get("/", (req, res) => {
   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wish-list-apeh-35rfc4105-sergioing1000s-projects.vercel.app"
+  );
   res.send(htmlresponse);
 });
 
