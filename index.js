@@ -11,7 +11,7 @@ const PORT = 3000;
 
 const corsOptions = {
   origin:
-    "https://wish-list-apeh-35rfc4105-sergioing1000s-projects.vercel.app", // Allow only your frontend domain
+    "https://wish-list-apeh-12fv59lxu-sergioing1000s-projects.vercel.app/", // Allow only your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
 };
@@ -133,7 +133,7 @@ app.get("/", (req, res) => {
   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://wish-list-apeh-35rfc4105-sergioing1000s-projects.vercel.app"
+    "https://wish-list-apeh-12fv59lxu-sergioing1000s-projects.vercel.app/"
   );
   res.send(htmlresponse);
 });
