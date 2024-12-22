@@ -11,7 +11,7 @@ const PORT = 3000;
 
 const corsOptions = {
   origin:
-    "https://wish-list-apeh-tks9s51pz-sergioing1000s-projects.vercel.app/", // Allow only your frontend domain
+    "https://wish-list-apeh-tks9s51pz-sergioing1000s-projects.vercel.app", // Allow only your frontend domain
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
   allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
 };
