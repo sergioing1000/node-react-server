@@ -12,7 +12,7 @@
             "dest":"/index.js",
             "methods":["GET","POST","PUT"],
             "headers": {
-                "Access-Control-Allow-Origin":"https://wish-list-apeh-12fv59lxu-sergioing1000s-projects.vercel.app/"
+                "Access-Control-Allow-Origin":"https://wish-list-apeh-tks9s51pz-sergioing1000s-projects.vercel.app"
             }
         }
 
