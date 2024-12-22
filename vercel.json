@@ -11,9 +11,9 @@
             "src": "/(.*)",
             "dest":"/index.js",
             "methods":["GET","POST","PUT"],
-            "headers": {
-                "Access-Control-Allow-Origin":"http://localhost:5173/"
-            }
+            // "headers": {
+            //     "Access-Control-Allow-Origin":"http://localhost:5173/"
+            // }
         }
 
     ]
