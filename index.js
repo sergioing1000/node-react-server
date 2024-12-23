@@ -10,23 +10,23 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  origin: "https://wish-list-apeh.vercel.app", // Allow only your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Headers allowed in requests
+  origin: "https://wish-list-apeh.vercel.app",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-app.options("*", cors(corsOptions)); // Handle preflight requests
+app.options("*", cors(corsOptions));
 
 app.use((req, res, next) => {
   console.log(`Request from origin: ${req.headers.origin}`);
   next();
 });
 
-let dataArray = []; // Initialize as an empty array
+let dataArray = [];
 
 async function initializeDataArray() {
   try {
@@ -139,6 +139,10 @@ app.get("/", (req, res) => {
 
 
 app.get("/api/items", (req, res) => {
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wish-list-apeh.vercel.app"
+  );
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
   }
@@ -148,7 +152,10 @@ app.get("/api/items", (req, res) => {
 
 // Save all items
 app.post('/api/save', (req, res) => {
-  // Access data sent from the frontend
+  res.setHeader(
+    "Access-Control-Allow-Origin",
+    "https://wish-list-apeh.vercel.app"
+  );
   const data = req.body;
 
   saveDocuments(data);
