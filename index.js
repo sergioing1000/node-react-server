@@ -92,6 +92,8 @@ async function saveDocuments(data) {
   const dbName = "DataBase";
   const collectionName = "Collection";
 
+  console.log(data)
+
   try {
     // Connect to MongoDB
     await client.connect();
@@ -113,6 +115,8 @@ async function saveDocuments(data) {
       });
     }
 
+    
+
     // Insert the new documents
     const result = await collection.insertMany(datatobePushed);
 
@@ -126,7 +130,6 @@ async function saveDocuments(data) {
 }
 
 ////////// ROUTES //////////
-// Get all items
 
 app.get("/", (req, res) => {
   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
@@ -137,7 +140,7 @@ app.get("/", (req, res) => {
   res.send(htmlresponse);
 });
 
-
+// Get all items
 app.get("/api/items", (req, res) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -151,7 +154,7 @@ app.get("/api/items", (req, res) => {
 
 
 // Save all items
-app.post('/api/save', (req, res) => {
+app.post("/api/save", (req, res) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://wish-list-apeh.vercel.app"
