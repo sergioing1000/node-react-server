@@ -19,11 +19,22 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.sendStatus(204); // No content
+});
 
-app.options("*", cors(corsOptions));
+
 
 app.use((req, res, next) => {
   console.log(`Request from origin: ${req.headers.origin}`);
+  next();
+});
+
+app.use((req, res, next) => {
+  console.log("Preflight Request Headers:", req.headers);
   next();
 });
 
@@ -169,9 +180,15 @@ app.get("/api/items", (req, res) => {
 
 
 app.post("/api/save", async (req, res) => {
-  res.setHeader("Access-Control-Allow-Origin", 
+  res.setHeader(
+    "Access-Control-Allow-Origin", 
     "https://wish-list-apeh.vercel.app",
     // "http://localhost:5173"
+    );
+    res.setheader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+    res.setheader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization"
     );
 
   const data = req.body;
