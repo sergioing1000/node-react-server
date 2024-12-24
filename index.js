@@ -11,6 +11,7 @@ const PORT = 3000;
 
 const corsOptions = {
   origin: "https://wish-list-apeh.vercel.app",
+  // origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -56,7 +57,7 @@ async function run() {
 
   try {
 
-    console.log("here");
+    console.log("here2");
 
     await client.connect();
 
@@ -115,18 +116,19 @@ async function saveDocuments(data) {
       });
     }
 
-    
 
     // Insert the new documents
     const result = await collection.insertMany(datatobePushed);
 
     console.log(`${result.insertedCount} documents inserted.`);
+
   } catch (error) {
     console.error("Error replacing documents:", error);
   } finally {
     // Close the connection
     await client.close();
   }
+
 }
 
 ////////// ROUTES //////////
@@ -135,7 +137,8 @@ app.get("/", (req, res) => {
   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://wish-list-apeh.vercel.app"
+    "https://wish-list-apeh.vercel.app",
+    // "http://localhost:5173"
   );
   res.send(htmlresponse);
 });
@@ -145,7 +148,8 @@ app.post("/", (req, res) => {
     "<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>";
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://wish-list-apeh.vercel.app"
+    "https://wish-list-apeh.vercel.app",
+    // "http://localhost:5173"
   );
   res.send(htmlresponse);
 });
@@ -154,7 +158,8 @@ app.post("/", (req, res) => {
 app.get("/api/items", (req, res) => {
   res.setHeader(
     "Access-Control-Allow-Origin",
-    "https://wish-list-apeh.vercel.app"
+    "https://wish-list-apeh.vercel.app",
+    // "http://localhost:5173"
   );
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
@@ -163,51 +168,64 @@ app.get("/api/items", (req, res) => {
 });
 
 
-// Save all items
-app.post("/api/save", (req, res) => {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://wish-list-apeh.vercel.app"
-  );
+app.post("/api/save", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", 
+    "https://wish-list-apeh.vercel.app",
+    // "http://localhost:5173"
+    );
+
   const data = req.body;
 
-  saveDocuments(data);
-  
-  // Respond to the client
-  res.status(201).json({
-    message: "Data received successfully",
-    receivedData: data,
-  });
+  try {
+    // Save the documents to the database
+    await saveDocuments(data);
+
+    // Re-initialize dataArray with the updated data
+    await initializeDataArray();
+
+    // Respond to the client
+    res.status(201).json({
+      message: "Data Updated successfully",
+      receivedData: data,
+    });
+  } catch (error) {
+    console.error("Error in /api/save:", error);
+    res.status(500).json({
+      message: "Error updating data",
+      error: error.message,
+    });
+  }
 });
+
 
 
 // Add a new item
-app.post("/api/items", (req, res) => {
-  const newItem = req.body.item;
-  if (newItem) {
-    dataArray.push(newItem);
-    res.status(201).json({
-      success: true,
-      message: "Item added successfully",
-      data: dataArray,
-    });
-  } else {
-    res.status(400).json({ success: false, message: "Item is required" });
-  }
-});
+// app.post("/api/items", (req, res) => {
+//   const newItem = req.body.item;
+//   if (newItem) {
+//     dataArray.push(newItem);
+//     res.status(201).json({
+//       success: true,
+//       message: "Item added successfully",
+//       data: dataArray,
+//     });
+//   } else {
+//     res.status(400).json({ success: false, message: "Item is required" });
+//   }
+// });
 
 // Delete an item
-app.delete("/api/items/:index", (req, res) => {
-  const index = parseInt(req.params.index, 10);
-  if (index >= 0 && index < dataArray.length) {
-    dataArray.splice(index, 1);
-    res.status(200).json({
-      success: true,
-      message: "Item deleted successfully",
-      data: dataArray,
-    });
-  } else {
-    res.status(400).json({ success: false, message: "Invalid index" });
-  }
-});
+// app.delete("/api/items/:index", (req, res) => {
+//   const index = parseInt(req.params.index, 10);
+//   if (index >= 0 && index < dataArray.length) {
+//     dataArray.splice(index, 1);
+//     res.status(200).json({
+//       success: true,
+//       message: "Item deleted successfully",
+//       data: dataArray,
+//     });
+//   } else {
+//     res.status(400).json({ success: false, message: "Invalid index" });
+//   }
+// });
 // 
