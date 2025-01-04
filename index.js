@@ -14,12 +14,32 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200,
+  preflightContinue: false, // Add this line
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-app.options("*", cors(corsOptions));
+
+// Add a specific handler for OPTIONS requests
+app.options('*', cors(corsOptions)); // This is important for preflight
+
+// Add this before your routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://wish-list-apeh.vercel.app');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle OPTIONS method
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+
 
 // Routes
 const router = express.Router();
