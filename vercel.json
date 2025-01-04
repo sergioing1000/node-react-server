@@ -12,7 +12,7 @@
           "dest": "/index.js",
           "methods": ["GET", "POST", "PUT", "DELETE"],
           "headers": {
-            "Access-Control-Allow-Origin": "*"
+            "Access-Control-Allow-Origin": "https://wish-list-apeh.vercel.app/"
           }
         }
 

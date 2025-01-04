@@ -9,7 +9,7 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  origin: ["https://wish-list-apeh.vercel.app", "http://localhost:5173"],
+  origin: ["https://wish-list-apeh.vercel.app/", "http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -28,7 +28,7 @@ app.use("/", router);
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", [
-    "https://wish-list-apeh.vercel.app",
+    "https://wish-list-apeh.vercel.app/",
     "http://localhost:5173",
   ]);
   res.setHeader("Access-Control-Allow-Methods", "GET, POST");
