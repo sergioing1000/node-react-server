@@ -27,14 +27,24 @@ const router = express.Router();
 app.use("/", router);
 
 app.use((req, res, next) => {
-  console.log(`Request from origin: ${req.headers.origin}`);
+  res.setHeader("Access-Control-Allow-Origin", [
+    "https://wish-list-apeh.vercel.app",
+    "http://localhost:5173",
+  ]);
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST");
   next();
 });
 
-app.use((req, res, next) => {
-  console.log("Preflight Request Headers:", req.headers);
-  next();
-});
+
+// app.use((req, res, next) => {
+//   console.log(`Request from origin: ${req.headers.origin}`);
+//   next();
+// });
+
+// app.use((req, res, next) => {
+//   console.log("Preflight Request Headers:", req.headers);
+//   next();
+// });
 
 let dataArray = [];
 
