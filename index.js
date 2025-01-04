@@ -14,15 +14,15 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
   optionsSuccessStatus: 200,
-  preflightContinue: false, // Add this line
+  preflightContinue: false,
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
-// Add a specific handler for OPTIONS requests
-app.options('*', cors(corsOptions)); // This is important for preflight
+// Add a specific handler for OPTIONS requests for preflight
+app.options('*', cors(corsOptions));
 
 // Add this before your routes
 app.use((req, res, next) => {
@@ -33,38 +33,11 @@ app.use((req, res, next) => {
   
   // Handle OPTIONS method
   if (req.method === 'OPTIONS') {
-    return res.status(200).end();
+    return res.status(201).end();
   }
   
   next();
 });
-
-
-
-// Routes
-const router = express.Router();
-
-app.use("/", router);
-
-// app.use((req, res, next) => {
-//   res.setHeader("Access-Control-Allow-Origin", [
-//     "https://wish-list-apeh.vercel.app",
-//     "http://localhost:5173",
-//   ]);
-//   res.setHeader("Access-Control-Allow-Methods", "GET, POST");
-//   next();
-// });
-
-
-// app.use((req, res, next) => {
-//   console.log(`Request from origin: ${req.headers.origin}`);
-//   next();
-// });
-
-// app.use((req, res, next) => {
-//   console.log("Preflight Request Headers:", req.headers);
-//   next();
-// });
 
 let dataArray = [];
 
@@ -113,7 +86,7 @@ async function run() {
     
   } catch (err) {
     console.error("Error reading documents:", err);
-    return []; // Return an empty array on error
+    return [];
   }
   finally {
     await client.close();
@@ -152,7 +125,6 @@ async function saveDocuments(data) {
       });
     }
 
-
     // Insert the new documents
     const result = await collection.insertMany(datatobePushed);
 
@@ -169,23 +141,15 @@ async function saveDocuments(data) {
 
 ////////// ROUTES //////////
 
+const router = express.Router();
+app.use("/", router);
+
 router.get("/", (req, res) => {
   const htmlresponse =
     "<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>";
   res.send(htmlresponse);
 });
 
-
-
-// app.get("/", (req, res) => {
-//   const htmlresponse = '<html><head><title>Document</title></head><body><h2>Title</h2><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi velit, eligendi nihil dolores odio deleniti officia labore veniam fuga quaerat totam voluptate dolore consectetur reiciendis error quos quae, fugit repellat.</p></body></html>';
-//   res.setHeader(
-//     "Access-Control-Allow-Origin",
-//     "https://wish-list-apeh.vercel.app",
-//     // "http://localhost:5173"
-//   );
-//   res.send(htmlresponse);
-// });
 
 // Get all items
 router.get("/api/items", (req, res) => {
@@ -194,30 +158,6 @@ router.get("/api/items", (req, res) => {
   }
   res.status(200).json(dataArray);
 });
-
-
-// router.get("/api/items", (req, res) => {
-//   res.setHeader(
-//     "Access-Control-Allow-Origin",
-//     "https://wish-list-apeh.vercel.app"
-//   );
-//   if (!dataArray || dataArray.length === 0) {
-//     return res.status(404).json({ success: false, message: "No items found" });
-//   }
-//   res.status(200).json(dataArray);
-// });
-
-// app.get("/api/items", (req, res) => {
-//   res.setHeader(
-//     "Access-Control-Allow-Origin",
-//     "https://wish-list-apeh.vercel.app"
-//   );
-//   if (!dataArray || dataArray.length === 0) {
-//     return res.status(404).json({ success: false, message: "No items found" });
-//   }
-//   res.status(200).json(dataArray);
-// });
-
 
 router.post("/api/save", async (req, res) => {
 
@@ -243,71 +183,3 @@ router.post("/api/save", async (req, res) => {
     });
   }
 });
-
-
-
-
-// app.post("/api/save", async (req, res) => {
-//   res.setHeader(
-//     "Access-Control-Allow-Origin", 
-//     "https://wish-list-apeh.vercel.app"
-//     );
-//     res.setheader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//     res.setheader(
-//       "Access-Control-Allow-Headers",
-//       "Content-Type, Authorization"
-//     );
-
-//   const data = req.body;
-
-//   try {
-//     // Save the documents to the database
-//     await saveDocuments(data);
-
-//     // Re-initialize dataArray with the updated data
-//     await initializeDataArray();
-
-//     // Respond to the client
-//     res.status(201).json({
-//       message: "Data Updated successfully",
-//       receivedData: data,
-//     });
-//   } catch (error) {
-//     console.error("Error in /api/save:", error);
-//     res.status(500).json({
-//       message: "Error updating data",
-//       error: error.message,
-//     });
-//   }
-// });
-
-// Add a new item
-// app.post("/api/items", (req, res) => {
-//   const newItem = req.body.item;
-//   if (newItem) {
-//     dataArray.push(newItem);
-//     res.status(201).json({
-//       success: true,
-//       message: "Item added successfully",
-//       data: dataArray,
-//     });
-//   } else {
-//     res.status(400).json({ success: false, message: "Item is required" });
-//   }
-// });
-
-// Delete an item
-// app.delete("/api/items/:index", (req, res) => {
-//   const index = parseInt(req.params.index, 10);
-//   if (index >= 0 && index < dataArray.length) {
-//     dataArray.splice(index, 1);
-//     res.status(200).json({
-//       success: true,
-//       message: "Item deleted successfully",
-//       data: dataArray,
-//     });
-//   } else {
-//     res.status(400).json({ success: false, message: "Invalid index" });
-//   }
-// });
-// 
