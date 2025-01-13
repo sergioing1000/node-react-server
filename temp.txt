@@ -1,0 +1,17 @@
+==============================
+vercel.json
+
+"Access-Control-Allow-Origin": "https://wish-list-apeh.vercel.app/"
+
+"Access-Control-Allow-Origin": "http://localhost:5173/"
+
+
+{
+  rows: [
+    [ 'Mogollas Guadalupe', '1' ],
+    [ 'nuevo item 111', '1' ],
+    [ 'nuevo item 222', '2' ],
+    [ 'nuevo item 333', '3' ],
+    [ 'nuevo item 444', '4' ]
+  ]
+}
