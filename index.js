@@ -9,8 +9,8 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  origin: "https://wish-list-apeh.vercel.app",
-  //origin: "http://localhost:5173",
+  // origin: "https://wish-list-apeh.vercel.app",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -27,8 +27,8 @@ app.options('*', cors(corsOptions));
 
 // Add this before your routes
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
-  //res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  // res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
@@ -43,16 +43,16 @@ app.use((req, res, next) => {
 
 let dataArray = [];
 
-async function initializeDataArray() {
+async function initializeDataArray(collectionName) {
   try {
-    dataArray = await run();
+    dataArray = await run(collectionName);
   } catch (error) {
     console.error("Error initializing data array:", error);
   }
 }
 
 async function startServer() {
-  await initializeDataArray();
+  await initializeDataArray("Collection");
   app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
   });
@@ -60,20 +60,18 @@ async function startServer() {
 
 startServer();
 
-async function run() {
+async function run(collectionName) {
 
   const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}/?retryWrites=true&w=majority`;
   const client = new MongoClient(uri);
 
-
   try {
-
     console.log("here2");
 
     await client.connect();
 
     const dbName = "DataBase";
-    const collectionName = "Collection";
+    //const collectionName = "Collection";
 
     const database = client.db(dbName);
     const collection = database.collection(collectionName);
@@ -85,13 +83,10 @@ async function run() {
       doc["Qty"].toString(),
       doc["User"],
     ]);
-    
-    
   } catch (err) {
     console.error("Error reading documents:", err);
     return [];
-  }
-  finally {
+  } finally {
     await client.close();
   }
 }
@@ -156,11 +151,31 @@ router.get("/", (req, res) => {
 
 
 // Get all items
-router.get("/api/items", (req, res) => {
+router.get("/api/items", async (req, res) => {
+
+
   if (!dataArray || dataArray.length === 0) {
     return res.status(404).json({ success: false, message: "No items found" });
   }
-  res.status(200).json(dataArray);
+  const { collection } = req.query;
+  console.log("#api/items#");
+  console.log(collection);
+
+  try {
+    // Re-initialize dataArray with the updated data
+    await initializeDataArray(collection);
+
+    // Respond to the client
+    res.status(200).json(dataArray);
+
+  } catch (error) {
+    console.error("Error in /api/items:", error);
+    res.status(500).json({
+      message: "Error loading data",
+      error: error.message,
+    });
+  }
+  
 });
 
 router.post("/api/save", async (req, res) => {
@@ -172,7 +187,7 @@ router.post("/api/save", async (req, res) => {
     await saveDocuments(data);
 
     // Re-initialize dataArray with the updated data
-    await initializeDataArray();
+    await initializeDataArray("Collection");
 
     // Respond to the client
     res.status(201).json({
