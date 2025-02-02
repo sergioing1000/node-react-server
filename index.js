@@ -9,8 +9,8 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  // origin: "https://wish-list-apeh.vercel.app",
-  origin: "http://localhost:5173",
+  origin: "https://wish-list-apeh.vercel.app",
+  // origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -27,8 +27,8 @@ app.options('*', cors(corsOptions));
 
 // Add this before your routes
 app.use((req, res, next) => {
-  // res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
-  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
+  // res.header("Access-Control-Allow-Origin", "http://localhost:5173");
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   res.header('Access-Control-Allow-Credentials', 'true');
