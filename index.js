@@ -9,8 +9,8 @@ const app = express();
 const PORT = 3000;
 
 const corsOptions = {
-  origin: "https://wish-list-apeh.vercel.app",
-  // origin: "http://localhost:5173",
+  // origin: "https://wish-list-apeh.vercel.app",
+  origin: "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -27,17 +27,17 @@ app.options('*', cors(corsOptions));
 
 // Add this before your routes
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
-  // res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  
+  // res.header("Access-Control-Allow-Origin","https://wish-list-apeh.vercel.app");
+  res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+
   // Handle OPTIONS method
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return res.status(201).end();
   }
-  
+
   next();
 });
 
@@ -82,6 +82,7 @@ async function run() {
       doc["Description"],
       doc["Qty"].toString(),
       doc["User"],
+      doc["Image"] || "", // <-- Add Image here
     ]);
   } catch (err) {
     console.error("Error reading documents:", err);
@@ -121,6 +122,7 @@ async function saveDocuments(data) {
         Description: data.rows[i][0],
         Qty: data.rows[i][1],
         User: data.rows[i][2],
+        Image: data.rows[i][3] || null, // <-- NEW: Save Image Base64 (or null if empty)
       });
     }
 
